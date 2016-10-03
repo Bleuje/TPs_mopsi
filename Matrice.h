@@ -4,7 +4,7 @@
 
 /*****
 Matrix class by Etienne JACOB
-Copy-on-write is used when shallow copy is used
+Copy-on-write is used when shallow copy is used, excepted on "m(i,j) = x;"
 ******/
 
 namespace tpmatrice {
@@ -21,22 +21,25 @@ namespace tpmatrice {
             ~Matrice();
 
             /* get/set */
-            T get(const int& i,const int& j);
+            T get(const int& i,const int& j) const;
             void set(const int& i,const int& j,const T& value);
 
             /* operators */
-            T operator()(const int& i,const int& j);
-            Matrice<T> operator + (const Matrice<T>& m);
-            Matrice<T> operator - (const Matrice<T>& m);
-            Matrice<T> operator * (const Matrice<T>& m);
-            Matrice<T> operator = (const Matrice<T>& m);
+            T operator()(const int& i,const int& j) const;
+            T& operator()(const int& i,const int& j);
+            Matrice<T> operator + (const Matrice<T>& m) const;
+            Matrice<T> operator - (const Matrice<T>& m) const;
+            Matrice<T> operator * (const Matrice<T>& m) const;
+            Matrice<T>& operator = (const Matrice<T>& m);
 
             /* copy */
             Matrice<T> copy();
 
             /* useful functions */
             void setRandomValues();
-            void print();
+            void print() const;
+            int nbRows() const;
+            int nbCols() const;
 
         private:
             T * tab;
@@ -116,7 +119,7 @@ namespace tpmatrice {
     }
 
     template <class T>
-    T Matrice<T>::get(const int& i,const int& j){
+    T Matrice<T>::get(const int& i,const int& j) const {
         assert(i>=0&&j>=0&&i<rows&&j<cols);
 
         return tab[i + j*rows];
@@ -151,8 +154,23 @@ namespace tpmatrice {
     }
 
     template <class T>
-    T Matrice<T>::operator()(const int& i,const int& j){
+    T Matrice<T>::operator()(const int& i,const int& j) const {
         return get(i,j);
+    }
+
+    template <class T>
+    T& Matrice<T>::operator()(const int& i,const int& j){
+        return tab[i + j*rows];
+    }
+
+    template <class T>
+    int Matrice<T>::nbRows() const {
+        return rows;
+    }
+
+    template <class T>
+    int Matrice<T>::nbCols() const {
+        return cols;
     }
 
     template <class T>
@@ -185,12 +203,12 @@ namespace tpmatrice {
     }
 
     template <class T>
-    Matrice<T> Matrice<T>::operator = (const Matrice<T>& m){
+    Matrice<T>& Matrice<T>::operator = (const Matrice<T>& m){
         return m.copy();
     }
 
     template <class T>
-    Matrice<T> Matrice<T>::operator + (const Matrice<T>& m){
+    Matrice<T> Matrice<T>::operator + (const Matrice<T>& m) const {
         assert((cols == m.cols) && (rows == m.rows));
         Matrice<T> res = Matrice<T>(rows,cols);
         for(int i=0;i<rows;i++){
@@ -202,7 +220,7 @@ namespace tpmatrice {
     }
 
     template <class T>
-    Matrice<T> Matrice<T>::operator - (const Matrice<T>& m){
+    Matrice<T> Matrice<T>::operator - (const Matrice<T>& m) const {
         assert((cols == m.cols) && (rows == m.rows));
         Matrice<T> res = Matrice<T>(rows,cols);
         for(int i=0;i<rows;i++){
@@ -214,9 +232,9 @@ namespace tpmatrice {
     }
 
     template <class T>
-    Matrice<T> Matrice<T>::operator * (const Matrice<T>& m){
+    Matrice<T> Matrice<T>::operator * (const Matrice<T>& m) const {
         assert(cols == m.rows);
-        Matrice<T> res = Matrice<T>(rows,cols);
+        Matrice<T> res = Matrice<T>(rows,m.cols);
         for(int i=0;i<rows;i++){
             for(int j=0;j<m.cols;j++){
                 T sum = 0;
@@ -230,13 +248,25 @@ namespace tpmatrice {
     }
 
     template <class T>
-    void Matrice<T>::print(){
+    void Matrice<T>::print() const {
         for(int i=0;i<rows;i++){
             for(int j=0;j<cols;j++){
                 std::cout<<tab[i + rows*j]<<"\t";
             }
             std::cout<<std::endl;
         }
+    }
+
+    template <class T>
+    std::ostream& operator<<(std::ostream& out, Matrice<T>& m)
+    {
+        for(int i=0;i<m.nbRows();i++){
+            for(int j=0;j<m.nbCols();j++){
+                out<<m(i,j)<<"\t";
+            }
+            out<<std::endl;
+        }
+        return out;
     }
 }
 

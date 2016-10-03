@@ -13,7 +13,10 @@ int main(){
     m.setRandomValues();
 
     Matrice<double> m3 = (m+m)*m - m;
+
     m3.print();
+    m3(0,0) = 5;
+    cout<<m3;
 
 
     Matrice<double> m2 = m.copy();
