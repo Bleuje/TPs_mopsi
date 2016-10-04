@@ -6,17 +6,24 @@ using namespace tpmatrice;
 
 int main(){
 
-    SHALLOW_COPY = true;
+    tpmatrice::SHALLOW_COPY = true;
 
     Matrice<double> m = Matrice<double>(3,3);
-
     m.setRandomValues();
 
-    Matrice<double> m3 = (m+m)*m - m;
+    Matrice<double> identity = Matrice<double>(3,3);
+
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            identity(i,j) = (i==j);
+        }
+    }
+
+    Matrice<double> m3 = ((m+m)*m - (m+m)*m + m)*identity;
 
     m3.print();
     m3(0,0) = 5;
-    cout<<m3<<endl;
+    cout<<m3;
 
     Matrice<double> m2 = m.copy();
 

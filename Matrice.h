@@ -3,7 +3,7 @@
 #include<bits/stdc++.h>
 
 /*****
-Matrix class by Etienne JACOB
+Matrix class by Etienne JACOB, 04/10/2016
 Copy-on-write is used when shallow copy is used, excepted on "m(i,j) = x;"
 ******/
 
@@ -40,7 +40,7 @@ namespace tpmatrice {
             void print() const;
             int nbRows() const;
             int nbCols() const;
-            int shallowCopies();
+            int shallowCopies() const;
 
         private:
             T * tab;
@@ -193,7 +193,7 @@ namespace tpmatrice {
     }
 
     template <class T>
-    int Matrice<T>::shallowCopies(){
+    int Matrice<T>::shallowCopies() const {
         return *copy_count;
     }
 
