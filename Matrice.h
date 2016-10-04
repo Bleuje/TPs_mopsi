@@ -40,6 +40,7 @@ namespace tpmatrice {
             void print() const;
             int nbRows() const;
             int nbCols() const;
+            int shallowCopies();
 
         private:
             T * tab;
@@ -51,6 +52,15 @@ namespace tpmatrice {
             Matrice<T> normalCopy();
         protected:
     };
+
+
+
+
+
+
+
+
+
 
     template <class T>
     Matrice<T>::Matrice()
@@ -183,6 +193,11 @@ namespace tpmatrice {
     }
 
     template <class T>
+    int Matrice<T>::shallowCopies(){
+        return *copy_count;
+    }
+
+    template <class T>
     Matrice<T> Matrice<T>::normalCopy(){
         Matrice<T> res = Matrice<T>(rows,cols);
         for(int i=0;i<rows;i++){
@@ -204,7 +219,36 @@ namespace tpmatrice {
 
     template <class T>
     Matrice<T>& Matrice<T>::operator = (const Matrice<T>& m){
-        return m.copy();
+        T * prevTab = tab;
+        rows = m.rows;
+        cols = m.cols;
+
+        if(SHALLOW_COPY){
+            tab = m.tab;
+
+            if((*copy_count)>1){
+                (*copy_count)--;
+            }
+            else {
+                delete[] prevTab;
+            }
+
+            copy_count = m.copy_count;
+            (*copy_count)++;
+            return *this;
+        } else {
+            delete[] prevTab;
+
+            tab = new T[rows*cols];
+
+            for(int i=0;i<rows;i++){
+                for(int j=0;j<cols;j++){
+                    tab[i + j*rows] = m.tab[i + j*rows];
+                }
+            }
+
+            return *this;
+        }
     }
 
     template <class T>

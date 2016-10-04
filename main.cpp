@@ -16,12 +16,27 @@ int main(){
 
     m3.print();
     m3(0,0) = 5;
-    cout<<m3;
-
+    cout<<m3<<endl;
 
     Matrice<double> m2 = m.copy();
-    Matrice<double> m4 = m2;
-    //cout << m2(1,1) << endl;
 
-    return 0;
+    cout<<"m has "<<m.shallowCopies()<<" copies."<<endl;
+
+    Matrice<double> m4;
+    m4 = m2;
+
+    cout<<"m has "<<m.shallowCopies()<<" copies."<<endl;
+
+    Matrice<double> m5;
+    m5 = m4;
+    m5 = m4;
+    m5 = m4;
+
+    cout<<"m has "<<m.shallowCopies()<<" copies."<<endl;
+
+    for(int i=0;i<5;i++){
+        Matrice<double> m6 = m5.copy();
+    }
+
+    cout<<"m has "<<m.shallowCopies()<<" copies."<<endl;
 }
